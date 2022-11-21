@@ -1,6 +1,7 @@
 package io.codelex.flightplanner.service;
 
 import io.codelex.flightplanner.airport.Airport;
+import io.codelex.flightplanner.flights.AddFlightRequest;
 import io.codelex.flightplanner.flights.Flight;
 import io.codelex.flightplanner.flights.PageResult;
 import io.codelex.flightplanner.flights.SearchFlightRequest;
@@ -21,23 +22,25 @@ public class FlightInMemoryService implements FlightService {
 
     private final FlightInMemoryRepository repository;
 
-    public static String generateUUID() {
-        return UUID.randomUUID().toString();
-    }
-
     public FlightInMemoryService(FlightInMemoryRepository repository) {
         this.repository = repository;
     }
 
+    public static String generateUUID() {
+        return UUID.randomUUID().toString();
+    }
+
     @Override
-    public synchronized void addFlight(Flight flight) {
+    public synchronized Flight addFlight(AddFlightRequest flightRequest) {
+        Flight flight = flightRequest.toFlight(FlightInMemoryService.generateUUID());
         if (repository.isSameFlight(flight)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
-        if (flight.getFrom().isTheSameAirport(flight.getTo()) || (flight.isStrangeDates())) {
+        if (flight.getFrom().isTheSameAirport(flight.getTo()) || (flight.hasIncorrectDates())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         repository.addFlight(flight);
+        return flight;
     }
 
     @Override
