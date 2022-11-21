@@ -1,6 +1,7 @@
 package io.codelex.flightplanner.service;
 
 import io.codelex.flightplanner.airport.Airport;
+import io.codelex.flightplanner.flights.AddFlightRequest;
 import io.codelex.flightplanner.flights.Flight;
 import io.codelex.flightplanner.flights.PageResult;
 import io.codelex.flightplanner.flights.SearchFlightRequest;
@@ -14,7 +15,7 @@ import java.util.List;
 public class FlightDBService implements FlightService {
 
     @Override
-    public void addFlight(Flight flight) {
+    public Flight addFlight(AddFlightRequest flightRequest) {
         throw new RuntimeException("DB mode not implemented!");
     }
 

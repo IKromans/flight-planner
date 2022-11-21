@@ -95,7 +95,7 @@ public class Flight {
         return Objects.hash(id, from, to, carrier, departureTime, arrivalTime);
     }
 
-    public boolean isStrangeDates() {
+    public boolean hasIncorrectDates() {
         return arrivalTime.isBefore(departureTime) || arrivalTime.isEqual(departureTime);
     }
 }

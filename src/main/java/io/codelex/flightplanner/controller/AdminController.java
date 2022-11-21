@@ -22,9 +22,7 @@ public class AdminController {
     @PutMapping("/flights")
     @ResponseStatus(HttpStatus.CREATED)
     public Flight addFlight(@Valid @RequestBody AddFlightRequest flightRequest) {
-        Flight flight = flightRequest.requestToFlight(FlightInMemoryService.generateUUID());
-        service.addFlight(flight);
-        return flight;
+        return service.addFlight(flightRequest);
     }
 
     @DeleteMapping("/flights/{id}")
