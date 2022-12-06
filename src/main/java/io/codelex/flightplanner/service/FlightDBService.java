@@ -47,10 +47,6 @@ public class FlightDBService implements FlightService {
         }
     }
 
-    boolean isSameFlight(Flight flight) {
-        return flight.getFrom().equals(flight.getTo());
-    }
-
     boolean hasIncorrectDates(Flight flight) {
         LocalDateTime departure = flight.getDepartureTime();
         LocalDateTime arrival = flight.getArrivalTime();
@@ -83,7 +79,16 @@ public class FlightDBService implements FlightService {
 
     @Override
     public PageResult searchFlights(SearchFlightRequest searchFlightRequest) {
-        return null;
+        if (searchFlightRequest.getTo().equals(searchFlightRequest.getFrom())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        List<Flight> flights = flightDBRepository.searchFlights(
+                searchFlightRequest.getFrom(),
+                searchFlightRequest.getTo(),
+                searchFlightRequest.getDepartureDate().atStartOfDay(),
+                searchFlightRequest.getDepartureDate().plusDays(1).atStartOfDay());
+
+        return new PageResult(0, flights.size(), flights);
     }
 
     @Override

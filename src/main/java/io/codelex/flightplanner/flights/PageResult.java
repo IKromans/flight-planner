@@ -12,6 +12,12 @@ public class PageResult {
         this.items = items;
     }
 
+    public PageResult(int page, int totalItems, List<Flight> items) {
+        this.page = page;
+        this.totalItems = totalItems;
+        this.items = items;
+    }
+
     public int getPage() {
         return page;
     }
