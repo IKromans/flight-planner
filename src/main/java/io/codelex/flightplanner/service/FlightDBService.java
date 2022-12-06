@@ -33,7 +33,9 @@ public class FlightDBService implements FlightService {
     public Flight addFlight(AddFlightRequest flightRequest) {
         Flight flight = flightRequest.toFlight(UUID.randomUUID().toString());
 
-        if (isSameFlight(flight) || hasIncorrectDates(flight)) {
+        if (flightRequest.getFrom().getAirport().trim().equalsIgnoreCase(flightRequest.getTo().getAirport().trim())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } else if (hasIncorrectDates(flight)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } else if (flightDBRepository.findFlight(flight.getFrom(), flight.getTo(), flight.getCarrier(),
                 flight.getDepartureTime(), flight.getArrivalTime()).isPresent()) {
