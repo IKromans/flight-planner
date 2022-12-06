@@ -12,6 +12,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .headers().frameOptions().disable().and()
                 .authorizeRequests()
                 .antMatchers("/admin-api/**").authenticated()
                 .anyRequest().anonymous()
