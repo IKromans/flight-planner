@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,9 +32,7 @@ public class FlightDBService implements FlightService {
     public Flight addFlight(AddFlightRequest flightRequest) {
         Flight flight = flightRequest.toFlight(UUID.randomUUID().toString());
 
-        if (flightRequest.getFrom().getAirport().trim().equalsIgnoreCase(flightRequest.getTo().getAirport().trim())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } else if (hasIncorrectDates(flight)) {
+        if (flight.getFrom().isTheSameAirport(flight.getTo()) || (flight.hasIncorrectDates())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } else if (flightDBRepository.findFlight(flight.getFrom(), flight.getTo(), flight.getCarrier(),
                 flight.getDepartureTime(), flight.getArrivalTime()).isPresent()) {
@@ -45,13 +42,6 @@ public class FlightDBService implements FlightService {
             flight.setTo(findOrCreate(flight.getTo()));
             return flightDBRepository.save(flight);
         }
-    }
-
-    boolean hasIncorrectDates(Flight flight) {
-        LocalDateTime departure = flight.getDepartureTime();
-        LocalDateTime arrival = flight.getArrivalTime();
-
-        return departure.isEqual(arrival) || arrival.isBefore(departure);
     }
 
     private Airport findOrCreate(Airport airport) {

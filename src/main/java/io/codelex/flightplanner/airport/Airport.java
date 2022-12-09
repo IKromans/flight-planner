@@ -10,6 +10,7 @@ public class Airport {
 
     @NotBlank
     private String country;
+
     @NotBlank
     private String city;
 
